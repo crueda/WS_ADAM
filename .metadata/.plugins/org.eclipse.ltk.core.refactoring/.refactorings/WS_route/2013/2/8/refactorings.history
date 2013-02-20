@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;RouteServer.java&apos; to &apos;WS_adam/src/com.deimos.adam&apos;&#x0D;&#x0A;- Original project: &apos;WS_route&apos;&#x0D;&#x0A;- Destination element: &apos;WS_adam/src/com.deimos.adam&apos;&#x0D;&#x0A;- Original element: &apos;com.deimos.adam.RouteServer.java&apos;" description="Copy compilation unit" destination="=WS_adam/src&lt;com.deimos.adam" element1="/src&lt;com.deimos.adam{RouteServer.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1361368919487" units="1" version="1.0"/>
+</session>

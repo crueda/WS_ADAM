@@ -1,0 +1,77 @@
+package com.deimos.adam.ws;
+
+import javax.jws.WebMethod;
+import javax.jws.WebResult;
+import javax.jws.WebService;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+@WebService(name="userWS")
+public class UserWS {
+
+private Connection connect = null;
+private Statement statement = null;
+private ResultSet resultSet = null;
+	
+@WebMethod public @WebResult(name="credit") Integer getCredit(String username){
+         
+    String dbname = "kyros4";
+    String dbuser = "root";
+    String dbpass = "";
+	String dbhost = "127.0.0.1";
+	String dbport = "13306";
+	       
+
+	  
+	int credito = 0;
+   
+	try {
+	               
+		System.out.println("Creating Mysql JDBC connection...");
+		Class.forName("com.mysql.jdbc.Driver");
+	    
+		// Setup the connection with the DB
+	    connect = DriverManager
+	          .getConnection("jdbc:mysql://"+dbhost+":"+dbport+"/"+"user="+dbuser+"&password="+dbpass);
+	    
+
+	    // Statements allow to issue SQL queries to the database
+	    statement = connect.createStatement();
+	    
+	    // Result set get the result of the SQL query
+	    resultSet = statement.executeQuery("select * from CREDIT where DESCRIPTION='"+username+"'");
+	    while (resultSet.next()) {
+	        credito = resultSet.getInt("SMS_CREDIT");
+	    }
+	    
+	} catch (Exception e) {
+	      //throw e;
+	    } finally {
+	      close();
+	    }
+
+	return credito;
+	}
+
+//You need to close the resultSet
+private void close() {
+	try {
+		if (resultSet != null) {
+			resultSet.close();
+		}
+
+		if (statement != null) {
+			statement.close();
+		}
+
+		if (connect != null) {
+			connect.close();
+		}
+	} catch (Exception e) {
+	}
+}
+
+}

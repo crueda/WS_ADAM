@@ -1,0 +1,90 @@
+package com.deimos.adam.ws;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jws.WebMethod;
+import javax.jws.WebResult;
+import javax.jws.WebService;
+
+import com.deimos.adam.dto.VertexDto;
+
+import java.sql.*;
+import java.util.*;
+import java.lang.*;
+import org.postgis.*;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+@WebService(name="userWS")
+public class UserWS {
+
+@WebMethod public @WebResult(name="credit") Integer getCredit(String username){
+
+	          
+    String dbname = "kyros4";
+    String dbuser = "root";
+    String dbpass = "";
+	String dbhost = "127.0.0.1";
+	String dbport = "13306";
+	       
+	   Connection connect = null;
+	  private Statement statement = null;
+	  private PreparedStatement preparedStatement = null;
+	  private ResultSet resultSet = null;
+	  
+   
+	try {
+	               
+		System.out.println("Creating JDBC connection...");
+		Class.forName("com.mysql.jdbc.Driver");
+	    
+		// Setup the connection with the DB
+	    connect = DriverManager
+	          .getConnection("jdbc:mysql://localhost/feedback?"
+	              + "user=sqluser&password=sqluserpw");
+		String url = "jdbc:postgresql://" + dbhost + ":" + dbport + "/" + dbname;
+	    conn = DriverManager.getConnection(url, dbuser, dbpass);
+	    //  System.out.println("Adding geometric type entries...");
+	    //  ((org.postgresql.Connection)conn).addDataType("geometry","org.postgis.PGgeometry");
+	    //  ((org.postgresql.Connection)conn).addDataType("box3d","org.postgis.PGbox3d");
+	    Statement s = conn.createStatement();
+	    /*System.out.println("Creating table with geometric types...");
+	                        s.execute(dropSQL);
+	                        s.execute(createSQL);
+	                        System.out.println("Inserting point...");
+	                        s.execute(insertPointSQL);
+	                        System.out.println("Inserting polygon...");
+	                        s.execute(insertPolygonSQL);
+	                        System.out.println("Done.");
+	                        */
+	                        //s = conn.createStatement();
+	                        
+	    System.out.println("Querying ...");
+	    ResultSet r = s.executeQuery("SELECT * FROM shortest_path('SELECT gid as id,source::integer,target::integer,length::double precision as cost FROM ways',100, 600, false, false);");
+	    while( r.next() )
+	    {
+	    	Object obj =  r.getObject(1);
+	        int id = r.getInt(2);
+	        System.out.println("Row " + id + ":");
+	        //System.out.println(obj.toString());
+	                                
+	        vertex = new VertexDto();
+	        vertex.setId(id);
+	        route.add(vertex);
+	     }
+	     	s.close();
+	     	conn.close();
+	   }
+	   catch( Exception e ) {
+		   e.printStackTrace();
+	   }
+
+	return route;
+	}
+}

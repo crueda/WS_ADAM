@@ -1,0 +1,5 @@
+package com.deimos.adam.utils;
+
+public class Configuration {
+
+}
