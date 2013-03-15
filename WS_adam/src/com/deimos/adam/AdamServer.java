@@ -46,12 +46,12 @@ private static void startWebServices(){
 }
 
 private static void startRouteWS(){
-	String webServLocalHostConfig="http://localhost:5000/routeWS";
+	String webServLocalHostConfig="http://172.26.0.217:5000/routeWS";
 	endpointRoute = Endpoint.publish(webServLocalHostConfig, routeWS);
 }
 
 private static void startUserWS(){
-	String webServLocalHostConfig="http://localhost:5000/userWS";
+	String webServLocalHostConfig="http://172.26.0.217:5000/userWS";
 	endpointRoute = Endpoint.publish(webServLocalHostConfig, userWS);
 }
 

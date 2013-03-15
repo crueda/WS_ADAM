@@ -20,6 +20,12 @@ public class Configuration {
     public final static String MYSQL_SERVER_PASSWD	= "mysqlPasswd";
     public final static String MYSQL_DBNAME			= "mysqlDBname";
  
+    public final static String PG_SERVER_IP   		= "pgServerIp";
+    public final static String PG_SERVER_PORT 		= "pgServerPort";
+    public final static String PG_SERVER_USER		= "pgUser";
+    public final static String PG_SERVER_PASSWD		= "pgPasswd";
+    public final static String PG_DBNAME			= "pgDBname";
+    
        private Configuration() {
         this.properties = new Properties();
         try {

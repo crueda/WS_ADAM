@@ -1,0 +1,118 @@
+package com.deimos.adam.ws;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.jws.WebMethod;
+import javax.jws.WebResult;
+import javax.jws.WebService;
+
+import com.deimos.adam.dto.VertexDto;
+
+import java.sql.*;
+import java.util.*;
+import java.lang.*;
+import org.postgis.*;
+
+@WebService(name="routeWS")
+public class RouteWS {
+
+@WebMethod public @WebResult(name="route") List<Integer> getRoute(int initVertex, int endVertex){
+
+	//List<VertexDto> route = new ArrayList<VertexDto>();
+	//VertexDto vertex;
+	
+	List<Integer> route = new ArrayList<Integer>();
+	
+	Connection conn;
+              
+    String dbname = "adam";
+    String dbuser = "user";
+    String dbpass = "user";
+	String dbhost = "172.26.0.2";
+	String dbport = "5432";
+	               
+
+	try {
+	               
+		System.out.println("Creating JDBC connection...");
+	    Class.forName("org.postgresql.Driver");
+	    String url = "jdbc:postgresql://" + dbhost + ":" + dbport + "/" + dbname;
+	    conn = DriverManager.getConnection(url, dbuser, dbpass);
+	    Statement s = conn.createStatement();
+	                        
+	    System.out.println("Querying ...");
+	    
+	    String query = "SELECT * FROM shortest_path('SELECT gid as id,source::integer,target::integer,length::double precision as cost FROM ways'," + initVertex + ", " +endVertex+ ", false, false);";
+	    ResultSet r = s.executeQuery(query);
+	    while( r.next() )
+	    {
+	    	Object obj =  r.getObject(1);
+	        int id = r.getInt(2);
+	        System.out.println("Row " + id + ":");
+	                                
+	        //vertex = new VertexDto();
+	        //vertex.setId(id);
+	        //route.add(vertex);
+	        
+	        if (id!=-1)
+	        	route.add(id);
+	     }
+	     	s.close();
+	     	conn.close();
+	   }
+	   catch( Exception e ) {
+		   e.printStackTrace();
+	   }
+
+	return route;
+	}
+
+@WebMethod public @WebResult(name="routedistance") double getRouteDistance(int initVertex, int endVertex){
+
+	Connection conn;
+              
+    String dbname = "adam";
+    String dbuser = "user";
+    String dbpass = "user";
+	String dbhost = "172.26.0.2";
+	String dbport = "5432";
+	               
+    double distanciaTotal = 0;
+    
+	try {
+	               
+		System.out.println("Creating JDBC connection...");
+	    Class.forName("org.postgresql.Driver");
+	    String url = "jdbc:postgresql://" + dbhost + ":" + dbport + "/" + dbname;
+	    conn = DriverManager.getConnection(url, dbuser, dbpass);
+	    Statement s = conn.createStatement();
+	                        
+	    System.out.println("Querying ...");
+	    
+	    String query = "SELECT * FROM shortest_path('SELECT gid as id,source::integer,target::integer,length::double precision as cost FROM ways'," + initVertex + ", " +endVertex+ ", false, false);";
+	    ResultSet r = s.executeQuery(query);
+	    
+	    while( r.next() )
+	    {
+	    	Object obj =  r.getObject(1);
+	    	int id = r.getInt(2);
+	    	int id2 = r.getInt(3);
+	    	int id3 = r.getInt(4);
+	    	System.out.println("Row " + obj.toString() + " : " + id + " : " + id2 + " : " +id3);
+	    	
+	    	double distancia = r.getInt(3); 
+	        System.out.println("distancia: " + distancia);
+	                                
+	        distanciaTotal += distancia;
+	     }
+	     	s.close();
+	     	conn.close();
+	   }
+	   catch( Exception e ) {
+		   e.printStackTrace();
+	   }
+
+	return distanciaTotal;
+	}
+}

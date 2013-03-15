@@ -18,7 +18,7 @@ private Connection connect = null;
 private Statement statement = null;
 private ResultSet resultSet = null;
 	
-@WebMethod public @WebResult(name="credit") Integer getCredit(String username){
+@WebMethod public @WebResult(name="getcredit") Integer getCredit(String username){
          
     String dbname = Configuration.getInstance().getProperty(Configuration.MYSQL_DBNAME);
     String dbuser = Configuration.getInstance().getProperty(Configuration.MYSQL_SERVER_USER);
@@ -30,7 +30,8 @@ private ResultSet resultSet = null;
    
 	try {
 	               
-		System.out.println("Creating Mysql JDBC connection...");
+		System.out.println("getCredit ("+username+")");
+		
 		Class.forName("com.mysql.jdbc.Driver");
 	    
 		// Setup the connection with the DB
@@ -55,6 +56,52 @@ private ResultSet resultSet = null;
 	    }
 
 	return credito;
+	}
+
+@WebMethod public @WebResult(name="addcredit") Integer addCredit(String username, Integer addcredit){
+    
+    String dbname = Configuration.getInstance().getProperty(Configuration.MYSQL_DBNAME);
+    String dbuser = Configuration.getInstance().getProperty(Configuration.MYSQL_SERVER_USER);
+    String dbpass = Configuration.getInstance().getProperty(Configuration.MYSQL_SERVER_PASSWD);
+	String dbhost = Configuration.getInstance().getProperty(Configuration.MYSQL_SERVER_IP);
+	String dbport = Configuration.getInstance().getProperty(Configuration.MYSQL_SERVER_PORT);
+	       
+	int credito = 0;
+	int nuevocredito = 0;
+   
+	try {
+	               
+		System.out.println("getCredit ("+username+")");
+		
+		Class.forName("com.mysql.jdbc.Driver");
+	    
+		// Setup the connection with the DB
+	    connect = DriverManager
+	          .getConnection("jdbc:mysql://"+dbhost+":"+dbport+"/" + dbname+"?"+"user="+dbuser+"&password="+dbpass);
+	    
+
+	    // Statements allow to issue SQL queries to the database
+	    statement = connect.createStatement();
+	    
+	    // Result set get the result of the SQL query
+	    resultSet = statement.executeQuery("select * from CREDIT where DESCRIPTION='"+username+"'");
+	    while (resultSet.next()) {
+	        credito = resultSet.getInt("SMS_CREDIT");
+	    }
+
+	    nuevocredito = credito + addcredit;
+
+	    statement.executeUpdate("update CREDIT set SMS_CREDIT="+nuevocredito+ " where DESCRIPTION='"+username+"'");
+	    
+	} catch (Exception e) {
+		  nuevocredito = -1;
+	      //throw e;
+		 e.printStackTrace();
+	    } finally {
+	      close();
+	    }
+
+	return nuevocredito;
 	}
 
 //You need to close the resultSet
